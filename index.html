@@ -1,0 +1,214 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>PulseToDo — Competition Edition</title>
+  <meta name="description" content="PulseToDo - polished, interactive to-do dashboard with drag & drop, lucky-draw spinner, confetti, themes and accessibility." />
+  <!-- Link to external stylesheet -->
+  <link rel="stylesheet" href="style.css" />
+  <!-- Minimal inline for skip-link visibility -->
+  <style>
+    .skip-link { position:absolute; left:-999px; top:auto; width:1px; height:1px; overflow:hidden; }
+    .skip-link:focus { left:12px; top:12px; width:auto; height:auto; padding:8px 12px; background:#fff; color:#000; border-radius:6px; z-index:9999;}
+  </style>
+</head>
+<body>
+  <!-- Accessibility quick skip -->
+  <a class="skip-link" href="#app-main">Skip to app</a>
+
+  <!-- Confetti canvas (hidden until used) -->
+  <canvas id="confettiCanvas" aria-hidden="true"></canvas>
+
+  <!-- Toast root (notifications) -->
+  <div id="toast-root" aria-live="polite" aria-atomic="true"></div>
+
+  <!-- Main app -->
+  <main id="app-main" class="pulse-app" role="application" aria-label="PulseToDo Competition App">
+
+    <!-- Decorative element (keeps original base look) -->
+    <div class="bg-decor" aria-hidden="true"></div>
+
+    <!-- Sidebar (navigation & actions) -->
+    <aside class="sidebar" role="navigation" aria-label="Main navigation">
+      <div class="brand">
+        <!-- SVG logo -->
+        <svg viewBox="0 0 100 100" class="logo" aria-hidden="true" focusable="false">
+          <defs>
+            <linearGradient id="gA" x1="0" x2="1">
+              <stop offset="0" stop-color="#6b8cff"/>
+              <stop offset="1" stop-color="#2fd27a"/>
+            </linearGradient>
+          </defs>
+          <rect x="6" y="6" width="88" height="88" rx="18" fill="url(#gA)"/>
+          <text x="50" y="60" text-anchor="middle" font-family="system-ui" font-size="40" fill="#fff">P</text>
+        </svg>
+        <div class="brand-text">
+          <h1>PulseToDo</h1>
+          <p class="muted">Polish • Pulse • Productivity</p>
+        </div>
+      </div>
+
+      <!-- Navigation buttons (keep same base views) -->
+      <nav class="sidebar-nav" aria-label="Views">
+        <button class="nav-btn active" data-view="today" aria-pressed="true">Today</button>
+        <button class="nav-btn" data-view="upcoming">Upcoming</button>
+        <button class="nav-btn" data-view="archive">Archive</button>
+        <button class="nav-btn" data-view="all">All Tasks</button>
+      </nav>
+
+      <!-- Sidebar actions -->
+      <div class="sidebar-actions">
+        <button id="exportBtn" class="ghost" title="Export tasks">⬇️ Export</button>
+        <label for="importFile" class="ghost import-label" title="Import tasks">⬆️ Import</label>
+        <input id="importFile" type="file" accept="application/json" style="display:none" />
+      </div>
+
+      <!-- Footer small -->
+      <div class="sidebar-footer muted">
+        <small>Competition build • Keyboard-friendly • Accessible</small>
+      </div>
+    </aside>
+
+    <!-- Panel (main content) -->
+    <section class="panel" role="region" aria-label="Main panel">
+      <header class="panel-header">
+        <div class="panel-left">
+          <h2 id="viewTitle">Today</h2>
+          <p id="quote" class="quote" aria-live="polite">Progress &gt; Perfection.</p>
+        </div>
+
+        <div class="panel-right">
+          <div class="stat-pill">
+            <span id="countLeft">0</span>
+            <small>left</small>
+          </div>
+          <div class="stat-pill">
+            <span id="countDone">0</span>
+            <small>done</small>
+          </div>
+          <button id="themeToggle" class="icon-btn" title="Toggle theme" aria-pressed="false">🌗</button>
+        </div>
+      </header>
+
+      <!-- Add form (keeps original base controls) -->
+      <section class="add-section" aria-label="Add new task">
+        <form id="addForm" class="add-form" autocomplete="off" novalidate>
+          <label for="taskInput" class="sr-only">New task</label>
+          <input id="taskInput" class="input" type="text" maxlength="200" placeholder="What will you conquer next? (Press Enter)" />
+          <select id="taskDue" class="select" aria-label="Due date">
+            <option value="today">Today</option>
+            <option value="tomorrow">Tomorrow</option>
+            <option value="week">This Week</option>
+            <option value="none">No Date</option>
+          </select>
+          <select id="taskTag" class="select small" aria-label="Category">
+            <option value="general">General</option>
+            <option value="work">Work</option>
+            <option value="study">Study</option>
+            <option value="personal">Personal</option>
+          </select>
+          <select id="taskPriority" class="select small" aria-label="Priority">
+            <option value="normal">Normal</option>
+            <option value="high">High</option>
+            <option value="low">Low</option>
+          </select>
+          <button id="addBtn" class="primary" aria-label="Add task">Add</button>
+        </form>
+
+        <!-- Quick controls -->
+        <div class="quick-controls">
+          <div class="filters" role="tablist" aria-label="Filters">
+            <button class="filter-btn active" data-filter="all" aria-selected="true">All</button>
+            <button class="filter-btn" data-filter="active">Active</button>
+            <button class="filter-btn" data-filter="completed">Completed</button>
+          </div>
+
+          <div class="actions-right">
+            <button id="clearCompleted" class="chip danger" title="Clear completed tasks">🧹 Clear Completed</button>
+            <!-- Lucky draw button (new feature) -->
+            <button id="luckyBtn" class="lucky" title="Can't decide? Let the spinner choose!" aria-disabled="true">🎲 Can't decide?</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Progress area -->
+      <section class="progress-section" aria-label="Progress">
+        <div class="progress-head">
+          <div class="label">Progress</div>
+          <div id="progressPercent" class="percent">0%</div>
+        </div>
+        <div class="progress-track" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+          <div id="progressFill" class="progress-fill"></div>
+        </div>
+      </section>
+
+      <!-- Boards (Kanban-like columns) -->
+      <section class="boards" aria-label="Task boards">
+        <div class="board" data-col="todo" aria-label="To Do column">
+          <div class="board-header">
+            <h3>To Do</h3><span id="count-todo" class="board-count">0</span>
+          </div>
+          <ul id="col-todo" class="task-column" role="list" aria-label="To Do tasks"></ul>
+        </div>
+
+        <div class="board" data-col="inprogress" aria-label="In Progress column">
+          <div class="board-header">
+            <h3>In Progress</h3><span id="count-inprogress" class="board-count">0</span>
+          </div>
+          <ul id="col-inprogress" class="task-column" role="list" aria-label="In Progress tasks"></ul>
+        </div>
+
+        <div class="board" data-col="done" aria-label="Done column">
+          <div class="board-header">
+            <h3>Done</h3><span id="count-done" class="board-count">0</span>
+          </div>
+          <ul id="col-done" class="task-column" role="list" aria-label="Done tasks"></ul>
+        </div>
+      </section>
+
+      <footer class="panel-footer">
+        <div class="footer-left">Tip: drag tasks between columns • Press <kbd>/</kbd> to focus input</div>
+        <div class="footer-right muted">Made for competitions • Press <kbd>n</kbd> to add new task</div>
+      </footer>
+    </section>
+
+    <!-- Templates (task & spinner) -->
+    <template id="taskTemplate">
+      <li class="task" draggable="true">
+        <div class="task-left">
+          <button class="task-check" aria-label="Mark complete" aria-pressed="false">
+            <svg class="tick" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6L9 17l-5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>
+          </button>
+          <div class="task-prio" aria-hidden="true"></div>
+        </div>
+        <div class="task-mid">
+          <div class="task-title" contenteditable="false" role="textbox" aria-label="Task title">Task</div>
+          <div class="task-meta muted"><span class="due">Today</span> <span class="tag">• General</span></div>
+        </div>
+        <div class="task-right">
+          <button class="task-edit" title="Edit">✏️</button>
+          <button class="task-delete" title="Delete">🗑️</button>
+          <button class="task-grab" title="Drag to move" aria-hidden="true">☰</button>
+        </div>
+      </li>
+    </template>
+
+    <!-- Spinner template used by lucky draw -->
+    <div id="spinnerOverlay" class="spinner-overlay" aria-hidden="true" role="dialog" aria-modal="true">
+      <div class="spinner-wrap" role="document" aria-label="Lucky draw">
+        <div class="spinner" id="spinnerWheel" aria-hidden="true"></div>
+        <button id="spinnerClose" class="ghost">Cancel</button>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Link to script -->
+  <script src="script.js" defer></script>
+
+  <!-- Extensive helpful comments are intentionally omitted here to keep file size manageable,
+       the CSS and JS files (sent next) include many comments and the full feature set.
+       The three files together form the final app — copy them into the same folder and open index.html. -->
+</body>
+</html>
