@@ -338,10 +338,14 @@ document.querySelectorAll(".nav-btn").forEach(btn=>{
 
     // filter tasks depending on view
     if (state.view === "today") {
-      // tasks due today
-      const today = new Date().toISOString().split("T")[0];
-      renderView(task => task.due === today);
-    } 
+  const today = new Date().toISOString().split("T")[0];
+  renderView(task => {
+    
+    if (!task.due) return true;
+    return task.due === today;
+  });
+}
+
     else if (state.view === "upcoming") {
       const today = new Date().toISOString().split("T")[0];
       renderView(task => task.due > today);
@@ -413,3 +417,4 @@ init();
 /* ============================================================================
    End of script.js — 350+ lines with features, comments, and competition polish
    ============================================================================ */
+
