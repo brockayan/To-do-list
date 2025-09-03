@@ -7,7 +7,7 @@
   (function() {
     try {
       const saved = localStorage.getItem("state");
-      let theme = "dark"; // default
+      let theme = "dark";
       if (saved) {
         const parsed = JSON.parse(saved);
         if (parsed.theme) theme = parsed.theme;
@@ -18,7 +18,7 @@
         document.documentElement.classList.add("light-theme");
       }
     } catch (e) {
-      document.documentElement.classList.remove("light-theme"); // fallback = dark
+      document.documentElement.classList.remove("light-theme"); 
     }
   })();
 </script>
@@ -74,7 +74,7 @@
       </div>
 
       <div class="sidebar-footer muted">
-        <small> Keyboard-friendly • Accessible</small>
+        <small>Keyboard-friendly • Accessible</small>
       </div>
     </aside>
 
@@ -86,7 +86,7 @@
           <p id="quote" class="quote" aria-live="polite">Progress &gt; Perfection.</p>
         </div>
 
-        <div class="panel-right">
+       <div class="panel-right">
   <div class="stat-pill">
     <span id="countLeft">0</span>
     <small>left</small>
@@ -213,5 +213,3 @@
   <script src="script.js" defer></script>
 </body>
 </html>
-
-
