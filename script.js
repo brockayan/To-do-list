@@ -1,6 +1,4 @@
-/* -------------------------- CONFIG & GLOBAL STATE ------------------------- */
-
-const AUDIO_ENABLED = true; // Set false to disable short tones
+const AUDIO_ENABLED = true; 
 
 const state = {
   tasks: [],                 // task objects
@@ -51,7 +49,6 @@ if (!colTodo || !colInProgress || !colDone) throw new Error("One or more board c
 
 /* -------------------------- UTILS ---------------------------------------- */
 
-/* Safe localStorage save & load */
 function saveToStorage() {
   try {
     const payload = { tasks: state.tasks, theme: state.theme };
@@ -76,12 +73,12 @@ function loadFromStorage() {
   }
 }
 
-/* Unique id */
+
 function uid() {
   return Date.now().toString(36) + Math.random().toString(36).slice(2,8);
 }
 
-/* Small tone for feedback using WebAudio API (non-blocking) */
+
 function beep(type="soft") {
   if (!AUDIO_ENABLED) return;
   try {
@@ -98,7 +95,7 @@ function beep(type="soft") {
     o.start(now);
     g.gain.exponentialRampToValueAtTime(0.0001, now + 0.12);
     o.stop(now + 0.14);
-    // close context to avoid leaks
+    
     setTimeout(()=>ctx.close(), 300);
   } catch (e) {
     // ignore
@@ -809,4 +806,5 @@ function init() {
 }
 
 init();
+
 
