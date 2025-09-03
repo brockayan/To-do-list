@@ -1,0 +1,33 @@
+.focus-timer.fullscreen {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;          
+  width: 100%;
+  background: var(--bg-color);
+  color: var(--text-color);
+}
+
+/* Big timer display */
+#timerDisplay {
+  font-size: 10rem;       
+  font-weight: 800;
+  margin: 20px 0;
+  text-align: center;
+}
+
+/* Time input + buttons */
+.time-setter {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  margin-top: 20px;
+}
+
+#customMinutes {
+  font-size: 1.5rem;
+  padding: 8px;
+  width: 100px;
+  text-align: center;
+}
