@@ -49,6 +49,7 @@ if (!colTodo || !colInProgress || !colDone) throw new Error("One or more board c
 
 /* -------------------------- UTILS ---------------------------------------- */
 
+/* Safe localStorage save & load */
 function saveToStorage() {
   try {
     const payload = { tasks: state.tasks, theme: state.theme };
@@ -73,12 +74,12 @@ function loadFromStorage() {
   }
 }
 
-
+/* Unique id */
 function uid() {
   return Date.now().toString(36) + Math.random().toString(36).slice(2,8);
 }
 
-
+/* Small tone for feedback using WebAudio API (non-blocking) */
 function beep(type="soft") {
   if (!AUDIO_ENABLED) return;
   try {
@@ -95,7 +96,7 @@ function beep(type="soft") {
     o.start(now);
     g.gain.exponentialRampToValueAtTime(0.0001, now + 0.12);
     o.stop(now + 0.14);
-    
+    // close context to avoid leaks
     setTimeout(()=>ctx.close(), 300);
   } catch (e) {
     // ignore
@@ -136,7 +137,6 @@ function normalizeTask(t){
   };
 }
 
-/* Convert due select to ISO date string (yyyy-mm-dd) or empty string */
 function dueSelectToISO(value) {
   const base = new Date(); base.setHours(0,0,0,0);
   if (value === "today") return base.toISOString().slice(0,10);
@@ -698,7 +698,6 @@ function launchConfetti() {
     if (!start) start = ts;
     frames++;
     draw();
-    // Stop after about 3.2 seconds to avoid resource hogging
     if (ts - start < 3200) confettiAnim = requestAnimationFrame(loop);
     else {
       ctx.clearRect(0, 0, W, H);
@@ -797,14 +796,18 @@ function init() {
   renderTasks();
   applyTheme(state.theme);
 
+
   if (taskInput) {
     setTimeout(()=> taskInput.focus(), 350);
   }
-
-
   updateLuckyButtonState();
 }
-
 init();
-
-
+/* -------------------------- FOCUS MODE REDIRECT -------------------------- */
+const focusBtn = document.getElementById("focusBtn");
+if (focusBtn) {
+  focusBtn.addEventListener("click", () => {
+    // Redirect to Focus Mode page
+    window.location.href = "focus.html";
+  });
+}
