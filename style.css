@@ -1,8 +1,5 @@
-/* ----------------------------
-   Root variables (theme)
-   ---------------------------- */
 :root{
-  /* Background & Surfaces */
+
   --bg-1: #071427;
   --bg-2: #0b1022;
   --panel: rgba(255,255,255,0.03);
@@ -504,9 +501,7 @@ button, .ghost, .primary, .filter-btn, .nav-btn{ will-change: transform; }
 h1,h2,h3{ line-height:1.15; }
 p{ line-height:1.6; }
 
-/* ----------------------------
-   Drag grab icon (optional helper)
-   ---------------------------- */
+
 .task-right .task-grab{
   opacity:.75;
 }
@@ -514,8 +509,6 @@ p{ line-height:1.6; }
   opacity:1; transform: translateY(-2px);
 }
 
-/* ----------------------------
-   Import label pointer
-   ---------------------------- */
 .import-label{ cursor:pointer; }
+
 
