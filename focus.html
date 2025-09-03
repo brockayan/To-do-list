@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>PulseToDo — Focus Mode</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="focus.css" />
+</head>
+<body>
+  <main class="pulse-app" role="application" aria-label="Focus Mode">
+    <aside class="sidebar" role="navigation">
+      <div class="brand">
+        <h1>🎯 Focus Mode</h1>
+        <p class="muted">Stay sharp, stay productive</p>
+      </div>
+
+      <nav class="sidebar-nav">
+        <a href="index.html" class="nav-btn">← Back to Tasks</a>
+      </nav>
+    </aside>
+
+    <section class="panel">
+      <header class="panel-header">
+        <div class="panel-left">
+          <h2>Focus Timer</h2>
+          <p class="quote">Deep work starts now.</p>
+        </div>
+        <div class="panel-right">
+          <button id="themeToggle" class="icon-btn" title="Toggle theme">🌗</button>
+        </div>
+      </header>
+
+      <!-- Timer -->
+<section class="focus-timer fullscreen">
+  <h3 id="timerDisplay">25:00</h3>
+
+  <!-- Time Input -->
+  <div class="time-setter">
+    <label for="customMinutes">Set Minutes:</label>
+    <input type="number" id="customMinutes" min="1" max="180" value="25" />
+    <button id="setTimeBtn" class="ghost">Set</button>
+  </div>
+
+  <!-- Controls -->
+  <div class="timer-controls">
+    <button id="startBtn" class="primary">▶ Start</button>
+    <button id="pauseBtn" class="ghost">⏸ Pause</button>
+    <button id="resetBtn" class="danger">🔄 Reset</button>
+  </div>
+</section>
+
+  </main>
+
+  <script src="focus.js" defer></script>
+</body>
+</html>
