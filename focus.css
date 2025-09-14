@@ -9,7 +9,7 @@
   color: var(--text-color);
 }
 
-/* Big timer display */
+
 #timerDisplay {
   font-size: 10rem;       
   font-weight: 800;
